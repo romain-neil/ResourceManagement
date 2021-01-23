@@ -1,7 +1,8 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 
 from rsc_mgmt.models import Resource, ResourceType
+from .forms import CreateResourceTypeForm, CreateResourceForm
 
 
 # Create your views here.
@@ -23,7 +24,17 @@ def delete(request, rsc_id):
 
 def create_res(request):
     # Formulaire de création de ressource
-    return HttpResponse("Resource create form")
+    if request.method == 'POST':
+        form = CreateResourceForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect('index')
+    else:
+        form = CreateResourceForm()
+
+    return render(request, 'rsc_mgmt/create_resource.html', locals())
 
 
 def delete_res(request):
@@ -31,7 +42,20 @@ def delete_res(request):
 
 
 def create_res_type(request):
-    return HttpResponse("Resource type create form")
+    if request.method == 'POST':
+        form = CreateResourceTypeForm(request.POST)
+
+        if form.is_valid():
+            res_name = form.cleaned_data['name']
+
+            r = ResourceType(name=res_name).save()
+
+            return redirect('index')
+
+    else:
+        form = CreateResourceTypeForm()
+
+    return render(request, 'rsc_mgmt/create_resource_type.html', locals())
 
 
 def delete_res_type(request):

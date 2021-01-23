@@ -1,0 +1,14 @@
+{% extends 'rsc_mgmt/base.html' %}
+
+{% block title %}Création d'une ressource{% endblock %}
+
+{% block body %}
+    <div>
+        <p><a href="{% url 'index' %}">Accueil</a></p>
+        <form action="{% url 'create_res' %}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Créer" />
+        </form>
+    </div>
+{% endblock %}
