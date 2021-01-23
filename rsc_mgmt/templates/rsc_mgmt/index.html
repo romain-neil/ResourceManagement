@@ -1,0 +1,30 @@
+<html lang="fr">
+    <head>
+        <style></style>
+        <title>Index</title>
+    </head>
+    <body>
+        <h2>Liste des ressources</h2>
+        {% if res %}
+            {% for r in res %}
+                <ul>
+                    <li>{{ r.name }}</li>
+                </ul>
+            {% endfor %}
+        {% else %}
+            <p>Il n'y a pas de ressources. <a href="{% url "create_res" %}">En ajouter une</a></p>
+        {% endif %}
+
+        <h2>Liste des types de ressources</h2>
+        {% if type %}
+            {% for type in type %}
+                <ul>
+                    <li>{{ type.name }}</li>
+                </ul>
+            {% endfor %}
+        {% else %}
+            <p>Pas de type de ressource. <a href="{% url "create_res_type" %}">En ajouter un</a></p>
+        {% endif %}
+
+    </body>
+</html>
