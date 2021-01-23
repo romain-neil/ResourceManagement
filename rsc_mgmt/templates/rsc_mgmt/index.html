@@ -2,14 +2,32 @@
 
 {% block title %}Index{% endblock %}
 
+{% block head %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static '/css/modal.css' %}" />
+{% endblock %}
+
 {% block body %}
         <h2>Liste des ressources - <a href="{% url "create_res" %}">En ajouter une</a></h2>
         {% if res %}
-            {% for r in res %}
-                <ul>
-                    <li><a href="#" onclick="alert({{ r.capacite }})">{{ r.libele }}</a></li>
-                </ul>
-            {% endfor %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Capacité</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in res %}
+                        <tr>
+                            <td><a href="#" onclick="viewDetail({{ r.pk }})">{{ r.libele }}</a></td>
+                            <td>{{ r.capacite }}</td>
+                            <td>{{ r.resource_type.name }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
             <p>Il n'y a pas de ressources.</p>
         {% endif %}
@@ -18,11 +36,58 @@
         {% if type %}
             {% for type in type %}
                 <ul>
-                    <li>{{ type.name }}</li>
+                    <li>{{ type.name }} &nbsp; <a href="{% url 'delete_resource_type' type.pk %}">Supprimer</a></li>
                 </ul>
             {% endfor %}
         {% else %}
             <p>Pas de type de ressource.</p>
         {% endif %}
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Libelé : <span id="lib"></span></p>
+            <p>Capacité : <span id="capa"></span></p>
+            <p>Type : <span id="type"></span></p>
+        </div>
+    </div>
+{% endblock %}
 
+{% block footer %}
+<script>
+let close = document.getElementsByClassName("close")[0],
+    modal = document.getElementById("modal");
+
+let closeModal = () => {
+    modal.style.display = "none";
+}
+
+close.addEventListener('click', closeModal)
+
+window.addEventListener('click', (e) => {
+    if(e.target === modal)
+        closeModal()
+})
+
+let getEl = (id) => {
+    return document.getElementById(id)
+}
+
+/**
+ * Récupère les détails d'une ressource
+ * @param id
+ */
+let viewDetail = (id) => {
+    fetch(`/resource/detail/${id}`)
+        .then(r => r.json())
+        .then((data) => {
+            if(!data.status) {
+                getEl("lib").innerText = data.libele;
+                getEl("capa").innerText = data.capacite;
+                getEl("type").innerText = data.type
+
+                modal.style.display = 'block';
+            }
+        })
+}
+</script>
 {% endblock %}

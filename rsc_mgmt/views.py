@@ -1,5 +1,5 @@
-from django.http import HttpResponse
-from django.shortcuts import render,redirect
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect
 
 from rsc_mgmt.models import Resource, ResourceType
 from .forms import CreateResourceTypeForm, CreateResourceForm
@@ -10,16 +10,34 @@ def index(request):
     return render(request, 'rsc_mgmt/index.html', {'res': Resource.objects.all(), 'type': ResourceType.objects.all()})
 
 
-def detail(request, rsc_id):
-    return render(request, 'rsc_mgmt/detail.html')
+def detail(request, rid=0):
+    try:
+        r = Resource.objects.get(pk=rid)
+
+        return JsonResponse({
+            'libele': r.libele,
+            'capacite': r.capacite,
+            'type': r.resource_type.__str__()
+        })
+    except Resource.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'resource not found'
+        })
 
 
-def edit(request, rsc_id):
-    return HttpResponse("Edit page, id : %i" % rsc_id)
+# Suppression de ressource
+def delete(request, rid=0):
+    try:
+        rsc = Resource(pk=rid).delete()
+    except Resource.DoesNotExist:
+        err_msg = "La resource n'a pa été trouvée"
+
+    return redirect('index')
 
 
-def delete(request, rsc_id):
-    return HttpResponse("Page de suppression, id : %i" % rsc_id)
+def edit(request, rid=0):
+    return HttpResponse("Edit page, id : %i" % rid)
 
 
 def create_res(request):
@@ -35,10 +53,6 @@ def create_res(request):
         form = CreateResourceForm()
 
     return render(request, 'rsc_mgmt/create_resource.html', locals())
-
-
-def delete_res(request):
-    return HttpResponse("bla bla bla")
 
 
 def create_res_type(request):
@@ -58,8 +72,13 @@ def create_res_type(request):
     return render(request, 'rsc_mgmt/create_resource_type.html', locals())
 
 
-def delete_res_type(request):
-    return HttpResponse("Self explained")
+def delete_res_type(request, rid=0):
+    try:
+        rsc = ResourceType(pk=rid).delete()
+    except ResourceType.DoesNotExist:
+        err_msg = "La resource n'a pa été trouvée"
+
+    return redirect('index')
 
 
 def login(request):
