@@ -1,26 +1,44 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-"""
-Représente une ressource
-"""
+
+class ResourceType(models.Model):
+
+    """
+    Représente un type de ressource
+    """
+
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class Resource(models.Model):
 
     """
-    Représente un type de ressource
-    Pourrait être changé en une relation avec un autre object
-    pour avoir plusieurs type d'objets
+    Représente une ressource
     """
 
-    class ResourceType(models.TextChoices):
-        CAR = 'CAR', _('Voiture')
-        ROOM = 'ROO', _('Salle')
-        COMPUTER = 'CMP', _('Computer')
+    resource_type = models.ForeignKey(ResourceType, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
 
-    resource_typpe = models.CharField(
-        max_length=3,
-        choices=ResourceType.choices,
-        default=ResourceType.CAR,
-    )
+    def __str__(self):
+        return self.resource_type
+
+
+class User(models.Model):
+    """
+    Classe qui rerésente un utilisateur
+
+    Amélioration possibles: activation du compte via l'administration (ajout d'un champ is_activated)
+    """
+    username = models.CharField(max_length=50),
+    password = models.CharField(max_length=50),
+    admin = models.BooleanField(default=False)
+
+    def is_admin(self):
+        return self.admin
+
+    def __str__(self):
+        return self.username
