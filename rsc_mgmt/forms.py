@@ -1,7 +1,6 @@
 from django import forms
-from django.shortcuts import get_object_or_404
 
-from rsc_mgmt.models import Resource, ResourceType
+from rsc_mgmt.models import Resource, ResourceType, User
 
 
 class CreateResourceForm(forms.ModelForm):
@@ -18,3 +17,21 @@ class CreateResourceTypeForm(forms.ModelForm):
         fields = ('name',)
 
     name = forms.CharField(max_length=50, required=True)
+
+
+class LoginForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username', 'password')
+
+    username = forms.CharField(max_length=50, required=True)
+    password = forms.PasswordInput()
+
+
+class RegisterForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username', 'password')
+
+    username = forms.CharField(max_length=50, required=True)
+    password = forms.PasswordInput()

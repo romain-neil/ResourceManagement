@@ -2,7 +2,6 @@ from django.db import models
 
 
 class ResourceType(models.Model):
-
     """
     Représente un type de ressource
     """
@@ -14,7 +13,6 @@ class ResourceType(models.Model):
 
 
 class Resource(models.Model):
-
     """
     Représente une ressource
     """
@@ -25,3 +23,12 @@ class Resource(models.Model):
 
     def __str__(self):
         return self.libele
+
+
+class User(models.Model):
+    username = models.CharField(max_length=50)
+    password = models.CharField(max_length=50)
+    admin = models.BooleanField(default=False)
+
+    def is_admin(self):
+        return self.admin

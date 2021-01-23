@@ -1,12 +1,18 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 
-from rsc_mgmt.models import Resource, ResourceType
-from .forms import CreateResourceTypeForm, CreateResourceForm
+from .forms import *
+
+
+def is_login(request):
+    return request.session.__contains__('user')
 
 
 # Create your views here.
 def index(request):
+    if not is_login(request):
+        return redirect('login')
+
     return render(request, 'rsc_mgmt/index.html', {'res': Resource.objects.all(), 'type': ResourceType.objects.all()})
 
 
@@ -82,8 +88,45 @@ def delete_res_type(request, rid=0):
 
 
 def login(request):
-    return HttpResponse("login page")
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            mdp = form.cleaned_data['password']
+
+            try:
+                user = User.objects.get(username=username, password=mdp)
+                request.session['user'] = user
+            except User.DoesNotExist:
+                return redirect('login')
+
+    else:
+        form = LoginForm()
+
+    return render(request, 'rsc_mgmt/login.html', locals())
+
+
+def logout(request):
+    if is_login(request):
+        del request.session['user']
+
+    return redirect('login')
 
 
 def register(request):
-    return HttpResponse("register page")
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            mdp = form.cleaned_data['password']
+
+            User(username=username, password=mdp).save()
+
+            return redirect('login')
+
+    else:
+        form = RegisterForm()
+
+    return render(request, 'rsc_mgmt/register.html', locals())
