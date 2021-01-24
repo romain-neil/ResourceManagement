@@ -10,7 +10,7 @@ rsc_patterns = [
     url('create/', views.create_res, name="create_res"),
     path('detail/<int:rid>', views.detail, name="resource_detail"),
     path('delete/<int:rid>', views.delete, name="resource_delete"),
-    path('edit/<int:rid>', views.edit),
+    path('edit/<int:rid>', views.edit, name="resource_edit"),
 ]
 
 """

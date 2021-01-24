@@ -19,6 +19,7 @@ class Resource(models.Model):
 
     resource_type = models.ForeignKey(ResourceType, on_delete=models.CASCADE)
     libele = models.CharField(max_length=50, default="")
+    place = models.CharField(max_length=50, default="")  # Localisation de la ressource
     capacite = models.IntegerField()
 
     def __str__(self):

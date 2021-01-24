@@ -8,14 +8,20 @@
 {% endblock %}
 
 {% block body %}
-        <h2>Liste des ressources - <a href="{% url "create_res" %}">En ajouter une</a></h2>
+        <h1>Bonjour {{ user.username }}</h1>
+        <h2>Liste des ressources</h2>
+        {% if user.is_admin %}
+            <p><a href="{% url "create_res" %}">En ajouter une</a></p>
+        {% endif %}
+
         {% if res %}
             <table>
                 <thead>
                     <tr>
-                        <th>Nom</th>
+                        <th>Nom <a href="?order=libele">▲</a> <a href="?order=-libele">▼</a></th>
                         <th>Capacité</th>
-                        <th>Type</th>
+                        <th>Type <a href="?order=resource_type">▲</a> <a href="?order=-resource_type">▼</a></th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,6 +30,9 @@
                             <td><a href="#" onclick="viewDetail({{ r.pk }})">{{ r.libele }}</a></td>
                             <td>{{ r.capacite }}</td>
                             <td>{{ r.resource_type.name }}</td>
+                            {% if user.is_admin %}
+                                <td><a href="{% url 'resource_edit' r.pk %}">Editer</a> <a href="{% url 'resource_delete' r.pk %}">Supprimer</a></td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -32,7 +41,11 @@
             <p>Il n'y a pas de ressources.</p>
         {% endif %}
 
-        <h2>Liste des types de ressources - <a href="{% url "create_res_type" %}">En ajouter un</a></h2>
+        <h2>Liste des types de ressources</h2>
+        {% if user.is_admin %}
+            <p><a href="{% url "create_res_type" %}">En ajouter un</a></p>
+        {% endif %}
+
         {% if type %}
             {% for type in type %}
                 <ul>
@@ -50,6 +63,7 @@
             <p>Type : <span id="type"></span></p>
         </div>
     </div>
+    <p><a href="{% url 'logout' %}">Se déconnecter</a></p>
 {% endblock %}
 
 {% block footer %}

@@ -6,17 +6,13 @@ from rsc_mgmt.models import Resource, ResourceType, User
 class CreateResourceForm(forms.ModelForm):
     class Meta:
         model = Resource
-        fields = ('libele', 'capacite', 'resource_type')
-
-    libele = forms.CharField(max_length=50)
+        fields = ('libele', 'capacite', 'place', 'resource_type')
 
 
 class CreateResourceTypeForm(forms.ModelForm):
     class Meta:
         model = ResourceType
         fields = ('name',)
-
-    name = forms.CharField(max_length=50, required=True)
 
 
 class LoginForm(forms.ModelForm):
