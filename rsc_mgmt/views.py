@@ -21,17 +21,19 @@ def index(request):
     order = request.GET.get('order', default='libele')
     res = None
 
+    res = Resource.objects.order_by(order)
+
     """
     Si on a un signe négatif dans le paramètre de trie, on retire ce signe pour inverser le filtre
     """
     if "-" in order:  # Si il y a un paramètre
-        res = Resource.objects.order_by(order.replace('-', ''))  # Alors on retire le signe négatif
+        order = ''  # Alors on retire le signe négatif
     else:
-        res = Resource.objects.order_by("-" + order)
+        order = "-"
 
     return render(request, 'rsc_mgmt/index.html', {
         'res': res,
-        'order_type': order,
+        'order_sign': order,
         'type': ResourceType.objects.all(),
         'user': request.session['user']
     })
