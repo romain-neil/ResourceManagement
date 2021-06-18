@@ -20,8 +20,6 @@ def index(request):
         return redirect('login')
 
     order = request.GET.get('order', default='libele')
-    res = None
-
     res = Resource.objects.order_by(order)
 
     """
