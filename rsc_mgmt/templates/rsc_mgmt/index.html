@@ -8,6 +8,17 @@
 {% endblock %}
 
 {% block body %}
+    {% if messages %}
+        <ul class="messages">
+            {% for msg in messages %}
+                <li>
+                    <div class="alert alert-{{msg.level_tag}}" role="alert">
+                        {{msg.message}}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
         <h1>Bonjour {{ user.username }}</h1>
         <h2>Liste des ressources</h2>
         {% if user.is_admin %}
@@ -61,6 +72,7 @@
             <p>Libelé : <span id="lib"></span></p>
             <p>Capacité : <span id="capa"></span></p>
             <p>Type : <span id="type"></span></p>
+            <p>Localisation : <span id="loc"></span></p>
         </div>
     </div>
     <p><a href="{% url 'logout' %}">Se déconnecter</a></p>
@@ -97,7 +109,8 @@ let viewDetail = (id) => {
             if(!data.status) {
                 getEl("lib").innerText = data.libele;
                 getEl("capa").innerText = data.capacite;
-                getEl("type").innerText = data.type
+                getEl("type").innerText = data.type;
+                getEl("loc").innerText = data.loc;
 
                 modal.style.display = 'block';
             }

@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
@@ -46,7 +47,8 @@ def detail(request, rid=0):
         return JsonResponse({
             'libele': r.libele,
             'capacite': r.capacite,
-            'type': r.resource_type.__str__()
+            'type': r.resource_type.__str__(),
+            'loc': r.place
         })
     except Resource.DoesNotExist:
         return JsonResponse({
@@ -131,6 +133,8 @@ def delete_res_type(request, rid=0):
         ResourceType(pk=rid).delete()
     except ResourceType.DoesNotExist:
         err_msg = "La resource n'a pa été trouvée"
+
+        messages.add_message(request, messages.ERROR, err_msg)
 
     return redirect('index')
 
